@@ -1,45 +1,53 @@
 from tkinter import *
 from tkinter import ttk
-funcoes = ('Uber','Ligação','Mensagem')
+import SerialHandler
+
+funcoes = ('Uber','Ligação','Mensagem','Facebook','Pedir comida','Emergencia')
+data = [(0,"Botão 1:",2), (1,"Botão 2:",0), (2,"Botão 3:",1)]
+
 class window:
     def __init__(self,tk):
-        self.frameBtn1 = Frame(tk)
-        self.frameBtn1.pack()
-        self.frameBtn2 = Frame(tk)
-        self.frameBtn2.pack()
-        self.frameBtn3 = Frame(tk)
-        self.frameBtn3.pack()
+        self.arduinoStatusText = "Carrregando..."
+        self.boxes = []
+        for index,a,b in data :
+            f = Frame(tk)
+            f.pack()
+            l = Label(f,text=a)
+            l.pack(side="left")
+            c = ttk.Combobox(f,text=a,values=funcoes)
+            c.pack(padx=15,pady=10)
+            self.boxes.append(c)
+            if(index == 2):
+                frameBottom = Frame(tk)
+                frameBottom.pack(pady=20)
+                self.arduinoStatusLabel = Label(frameBottom,text="Carregando...")
+                self.arduinoStatusLabel.pack(side="left")
+
+                submitBtn = Button(frameBottom, text ="Confirmar", command = self.submit)
+                submitBtn.pack(padx=10,pady=10)
         
-        lable1 = Label(self.frameBtn1, text="Botão 1:")
-        lable1.pack(side="left")
-        btn1 = ttk.Combobox(self.frameBtn1, values=funcoes)
-        btn1.current(2)
-        btn1.pack(padx=15,pady=10)
-
-        lable2 = Label(self.frameBtn2, text="Botão 2:")
-        lable2.pack(side="left")
-        btn2 = ttk.Combobox(self.frameBtn2, values=funcoes)
-        btn2.current(1)
-        btn2.pack(padx=15,pady=10)
-
-        lable3 = Label(self.frameBtn3, text="Botão 3:")
-        lable3.pack(side="left")
-        btn3 = ttk.Combobox(self.frameBtn3, values=funcoes)
-        btn3.current(0)
-        btn3.pack(padx=15,pady=10)
-
-        submitBtn = Button(tk, text ="Confirmar", command = self.submit)
-        submitBtn.pack(padx=10)
-
-    def submit(self):   # Ao pressionar o botão submit, fazer alguma coisa
-        print("oi")
+    
+    def submit(self):  
+        keys = [] 
+        
+        SerialHandler.sendValues(keys)
+        
         
 
+        
 root = Tk()
 root.resizable(False, False)
 root.title("Tangram")
 root.geometry("300x300")
 label = Label( root, text="Mudar funções dos botões", font=("Helvetica", 16))
 label.pack(pady=10)
-app = window(root)
+app = window(root) 
+def update():
+    app.arduinoStatusLabel['text'] = SerialHandler.getLabel()
+    app.arduinoStatusLabel['fg'] = 'BLACK'
+    root.after(2000, update)
+root.after(2000, update)
+
 root.mainloop()
+
+
