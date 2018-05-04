@@ -1,6 +1,6 @@
 #include <EEPROM.h>
 
-int i = 0;      //Memory index
+int i = 0;   //Memory index
 
 void setup() {
   
@@ -15,17 +15,9 @@ void setup() {
 
 void loop() {
     //Check if there is data coming from Python
-    if (Serial.available() > 0) {            
-        EEPROM.write(i, Serial.read());     //Write in EEPROM memory the received data
-        if(i==2){
-          i=0;
-        }else{
-          i++;
-        }
-    }
-    
+       
     //Buttons Handles
-    for(int index = 0;index<3;index++){
+    for(int index = 0;index<3;index++){ 
       if(digitalRead(index+2) == HIGH){
           Serial.print(EEPROM.read(index),DEC);
           Serial.print("\n");

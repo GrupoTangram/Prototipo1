@@ -1,6 +1,7 @@
 import serial
 import struct
 import serial.tools.list_ports
+
 ARDUINO_STATUS = True;
 arduino_ports = []
 def getLabel():
@@ -8,9 +9,9 @@ def getLabel():
 	global	arduino_ports
 
 	arduino_ports = [
-    p.device
+    p[0]
     for p in serial.tools.list_ports.comports()
-    if 'Arduino' in p.description
+    if 'Arduino' in p[1]
 	]
 
 	if not arduino_ports:
@@ -23,10 +24,9 @@ def getLabel():
 def sendValues(keys):
 	if(ARDUINO_STATUS == True):
 		ser = serial.Serial(arduino_ports[0],9600)
-		for a in keys:
-			ser.write(a)
+		
 	else:
-		raise noArduino(ARDUINO_STATUS)
+		raise IOError("Nenhum Arduino encontrado")
 
 
 class noArduino(Exception):

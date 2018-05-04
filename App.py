@@ -1,20 +1,27 @@
 from tkinter import *
 from tkinter import ttk
-import SerialHandler
 
-funcoes = ('Uber','Ligação','Mensagem','Facebook','Pedir comida','Emergencia')
-data = [(0,"Botão 1:",2), (1,"Botão 2:",0), (2,"Botão 3:",1)]
+import SerialHandler
+import json
+
+data = []
+with open('data.json') as json_data:
+    data = json.load(json_data)
+    
+
+labels = [(0,"Botão 1:"), (1,"Botão 2:"), (2,"Botão 3:")]
 
 class window:
     def __init__(self,tk):
         self.arduinoStatusText = "Carrregando..."
         self.boxes = []
-        for index,a,b in data :
+
+        for index,a in labels :
             f = Frame(tk)
             f.pack()
             l = Label(f,text=a)
             l.pack(side="left")
-            c = ttk.Combobox(f,text=a,values=funcoes)
+            c = ttk.Combobox(f,text=a,values=data.FunctionsInfo[].['Nome'])
             c.pack(padx=15,pady=10)
             self.boxes.append(c)
             if(index == 2):
@@ -30,11 +37,11 @@ class window:
     def submit(self):  
         keys = [] 
         
-        SerialHandler.sendValues(keys)
-        
-        
-
-        
+        try:
+            SerialHandler.sendValues(keys)
+        except IOError:
+            self.arduinoStatusLabel['fg'] = 'RED'
+           
 root = Tk()
 root.resizable(False, False)
 root.title("Tangram")
@@ -42,6 +49,7 @@ root.geometry("300x300")
 label = Label( root, text="Mudar funções dos botões", font=("Helvetica", 16))
 label.pack(pady=10)
 app = window(root) 
+
 def update():
     app.arduinoStatusLabel['text'] = SerialHandler.getLabel()
     app.arduinoStatusLabel['fg'] = 'BLACK'
