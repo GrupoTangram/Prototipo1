@@ -17,7 +17,11 @@ void loop() {
     //Check if there is data coming from Python
     if (Serial.available() > 0) {            
         EEPROM.write(i, Serial.read());     //Write in EEPROM memory the received data
-        i++;  //increment memory index 
+        if(i==2){
+          i=0;
+        }else{
+          i++;
+        }
     }
     
     //Buttons Handles
