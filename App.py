@@ -4,12 +4,11 @@ from tkinter import ttk
 import SerialHandler
 import json
 
-data = []
-with open('data.json') as json_data:
-    data = json.load(json_data)
-    
+data = ["a","b","c",]    
 
 labels = [(0,"Botão 1:"), (1,"Botão 2:"), (2,"Botão 3:")]
+
+sender = SerialHandler.SerialHandler()
 
 class window:
     def __init__(self,tk):
@@ -21,7 +20,7 @@ class window:
             f.pack()
             l = Label(f,text=a)
             l.pack(side="left")
-            c = ttk.Combobox(f,text=a,values=data.FunctionsInfo[].['Nome'])
+            c = ttk.Combobox(f,text=a,values=data)
             c.pack(padx=15,pady=10)
             self.boxes.append(c)
             if(index == 2):
@@ -36,11 +35,14 @@ class window:
     
     def submit(self):  
         keys = [] 
-        
+        for a in self.boxes:
+            keys.append(a.current())
+
         try:
-            SerialHandler.sendValues(keys)
+            
+            sender.sendValues(keys)
         except IOError:
-            self.arduinoStatusLabel['fg'] = 'RED'
+            self.arduinoStatusLabel['fg']='RED'
            
 root = Tk()
 root.resizable(False, False)
@@ -51,7 +53,8 @@ label.pack(pady=10)
 app = window(root) 
 
 def update():
-    app.arduinoStatusLabel['text'] = SerialHandler.getLabel()
+
+    app.arduinoStatusLabel['text'] = sender.tryConnection()
     app.arduinoStatusLabel['fg'] = 'BLACK'
     root.after(2000, update)
 root.after(2000, update)
