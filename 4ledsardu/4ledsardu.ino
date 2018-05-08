@@ -19,7 +19,7 @@ void loop() {
         tmpKey = Serial.read();
         EEPROM.put(i,tmpKey);
         if(i == 2){
-            i =0;
+            i = 0;
           }else{
             i++;  
           }
