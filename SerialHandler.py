@@ -3,7 +3,7 @@ import serial
 import serial.tools.list_ports
 
 
-def findConection():
+def getPort():
 
 	arduino_ports = [
 		p[0]

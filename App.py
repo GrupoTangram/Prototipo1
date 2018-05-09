@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 
 from SerialHandler import *
 
@@ -7,8 +8,7 @@ from SerialHandler import *
 data = ["Uber","Facebook","Twitter"]    
 
 labels = [(0,"Botão 1:"), (1,"Botão 2:"), (2,"Botão 3:")]
-
-ser = serial.Serial("COM11",9600)
+keys = []
 
 class window:
     def __init__(self,tk):
@@ -34,7 +34,7 @@ class window:
                 submitBtn.pack(padx=10,pady=10)
 
     def submit(self):  
-        keys = []
+        global keys 
 
         for a in self.boxes:
             keys.append(a.current())
@@ -45,13 +45,18 @@ class window:
 
 		      
 root = Tk()
-root.resizable(False, False)
-root.title("Tangram")
-root.geometry("300x300")
-label = Label( root, text="Mudar funções dos botões", font=("Helvetica", 16))
-label.pack(pady=10)
-app = window(root)
+try:
+    ser = serial.Serial(getPort(),9600)
+except:
+    messagebox.showwarning("Tangram","Nenhum arduino conectado!")
+else:
+    root.resizable(False, False)
+    root.title("Tangram")
+    root.geometry("300x300")
+    label = Label( root, text="Mudar funções dos botões", font=("Helvetica", 16))
+    label.pack(pady=10)
+    app = window(root)
 
-root.mainloop()
+    root.mainloop()
 
 

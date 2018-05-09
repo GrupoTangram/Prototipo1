@@ -26,7 +26,7 @@ void loop() {
         
       }
     
-    Serial.println(EEPROM.read(0));
+    
     
     //Buttons Handles
     for(int index = 0;index<3;index++){ 

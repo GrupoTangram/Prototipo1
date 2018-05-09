@@ -1,5 +1,4 @@
-import serial
+array = [a for a in ["sim","nao","c"] if a == "nao" ]
+print(array)
 
-ser = serial.Serial("COM13",9600)
-ser.write(b'a')
 
