@@ -2,7 +2,7 @@ import struct
 import serial
 import serial.tools.list_ports
 
-
+"""Try to get Arduino connected port, if dont, raise error"""
 def getPort():
 
 	arduino_ports = [
