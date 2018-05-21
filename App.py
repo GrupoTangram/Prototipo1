@@ -8,7 +8,7 @@ numberOfButtons = 3
 #List that will contain the labels number and text. Ex: [(0,"Botão 1"),(1,"Botão 2")... ]
 labels = [(i,str("Botão " + str(i+1))) for i in range(numberOfButtons )] 
 #Functions that the user can select for the buttons  
-button_functions = ["Uber","Facebook","Twitter"] 
+button_functions = ["Ligar para contato","Uber","Ligar dados","Achar o celular"] 
 
 class window:
     def __init__(self,tk):
@@ -50,7 +50,7 @@ mainWindow = Tk()
 
 """Try to connect with the arduino. If dont, show menssage"""
 try: 
-    ser = serial.Serial(getPort(),9600)
+    ser = serial.Serial('/dev/ttyACM1',9600)
 except: 
     messagebox.showwarning("Tangram","Nenhum arduino conectado!")
 else: 

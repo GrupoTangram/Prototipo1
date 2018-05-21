@@ -2,6 +2,13 @@
 
 char tmpKey;  //Memory index
 int i = 0;
+
+char ch_arr[4][30] = {
+                         "Ligando para filho",
+                         "Pedindo Uber...",
+                         "Ligando dados...",
+                         "Ligando para seu celular..."
+                     };
 void setup() {
   
   //Start Serial
@@ -31,9 +38,9 @@ void loop() {
     //Buttons Handles
     for(int index = 0;index<3;index++){ 
       if(digitalRead(index+2) == HIGH){
-          Serial.print(EEPROM.read(index));
+          Serial.print(ch_arr[EEPROM.read(index)]);
           Serial.print("\n");
-          delay(250);
+          delay(1000);
       }
     }
   
