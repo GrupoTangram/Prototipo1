@@ -13,7 +13,7 @@ def getPort():
 	if not arduino_ports:
 		raise IOError    
 	else:
-		return arduino_ports[0]
+		return "/dev/"+os.popen("dmesg | egrep ttyACM | cut -f3 -d: | tail -n1").read().strip()
 	
 
 	
