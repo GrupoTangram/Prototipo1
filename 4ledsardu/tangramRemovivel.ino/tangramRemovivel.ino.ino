@@ -21,63 +21,66 @@ const float sourceVoltage = 5;
 const float fixedRes = 330; 
 const float numberOfButtons = sizeof(analogPin)/sizeof(int);
 
-int functionKeys[2][3] = {
-    {1,220},
-    {2,995}
+  int functionKeys[2][3] = {
+      {1,220},
+      {2,995}
+    };
+
+
+  float pinResistance(int pin){
+    float pinVoltage = analogRead(pin)*sourceVoltage/1024; //The tension on the pin
+    if (pinVoltage != sourceVoltage){ //avoid division by zero
+      //float functionRes = fixedRes * pinVoltage/(sourceVoltage - pinVoltage);
+      float functionRes = fixedRes * (sourceVoltage - pinVoltage)/pinVoltage;
+      return functionRes;
+    }; // end if
+    return 0; //returns 0 insted when the button is not being pressed.instead of infinie(error)
+  }; //end pinResistance function
+
+
+
+  int functionTag(float resistance){
+    for(int i = 0; i<2; i++){
+      if ( (resistance < functionKeys[i][1]*(1 + tolerance)) and 
+         (resistance > functionKeys[i][1]*(1 - tolerance)) ){
+          return functionKeys[i][0]; //Return the function tag
+         }; //end if
+    }//end for loop
+    
+    return 0; //if nothing was found
   };
 
-
-float pinResistance(int pin){
-  float pinVoltage = analogRead(pin)*sourceVoltage/1024; //The tension on the pin
-  if (pinVoltage != sourceVoltage){ //avoid division by zero
-    //float functionRes = fixedRes * pinVoltage/(sourceVoltage - pinVoltage);
-    float functionRes = fixedRes * (sourceVoltage - pinVoltage)/pinVoltage;
-    return functionRes;
-  }; // end if
-  return 0; //returns 0 insted when the button is not being pressed.instead of infinie(error)
-}; //end pinResistance function
-
-
-
-int functionTag(float resistance){
-  for(int i = 0; i<2; i++){
-    if ( (resistance < functionKeys[i][1]*(1 + tolerance)) and 
-       (resistance > functionKeys[i][1]*(1 - tolerance)) ){
-        return functionKeys[i][0]; //Return the function tag
-       }; //end if
-  }//end for loop
-  
-  return 0; //if nothing was found
-};
-
-
-void setup() { 
-  Serial.begin(9600);
-  for(int i = 0; i<2;i++){
-    functionKeys[i][2] = EEPROM.read(i);
-    
-  
-  }
-  
-  
-}
-
-void loop() {
-  if (Serial.available() > 0) {
-    Serial.read();
+  void setup() { 
+    Serial.begin(9600);
     for(int i = 0; i<2;i++){
-      Serial.print(functionKeys[i][2]);
-      Serial.println();
-      
+      functionKeys[i][2] = EEPROM.read(i);
+   
     }
-  }
-    
 
+  }
+  int isConnected = 0;
+  void loop() {
+  
+  if (Serial.available() > 0) {
     
-  int pressedKey = functionTag(pinResistance(A3)); 
-  if(pressedKey > 0 ){
-      functionKeys[pressedKey-1][2] += 1;
-      EEPROM.write(pressedKey-1,functionKeys[pressedKey-1][2]);
+    Serial.read();
+    int i = 0;
+    while(i<2){
+        Serial.println(functionKeys[i][2]);
+        i++;
+      }
+    isConnected = 1;
+  }else if(isConnected){
+      int pressedKey = functionTag(pinResistance(A3));
+      Serial.println(pressedKey); 
+      if(pressedKey > 0 ){
+          functionKeys[pressedKey-1][2] += 1;
+          EEPROM.write(pressedKey-1,functionKeys[pressedKey-1][2]);
+          delay(1000);
+        }
+        delay(100);
     }
-  delay(1000);
+
+  
+  
 }
